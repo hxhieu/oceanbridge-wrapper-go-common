@@ -1,14 +1,8 @@
 package models
 
 import (
-	"net/http"
 	"time"
 )
-
-// Dummy - GET /api/dummy
-func Dummy(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello world"))
-}
 
 // Shipment struct
 type Shipment struct {
