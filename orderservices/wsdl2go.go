@@ -3192,7 +3192,7 @@ func (p *orderServiceSoap) GetOrderList(GetOrderList *GetOrderList) (*GetOrderLi
 	γ := struct {
 		OperationGetOrderListSoapOut `xml:"GetOrderListResponse"`
 	}{}
-	if err := p.cli.RoundTripSoap12("http://www.edi.com.au/EnterpriseService/GetOrderList", α, &γ); err != nil {
+	if err := p.cli.RoundTripWithAction("http://www.edi.com.au/EnterpriseService/GetOrderList", α, &γ); err != nil {
 		return nil, err
 	}
 	return γ.GetOrderListResponse, nil
@@ -3211,7 +3211,7 @@ func (p *orderServiceSoap) Hello(Hello *Hello) (*HelloResponse, error) {
 	γ := struct {
 		OperationHelloSoapOut `xml:"HelloResponse"`
 	}{}
-	if err := p.cli.RoundTripSoap12("http://www.edi.com.au/EnterpriseService/Hello", α, &γ); err != nil {
+	if err := p.cli.RoundTripWithAction("http://www.edi.com.au/EnterpriseService/Hello", α, &γ); err != nil {
 		return nil, err
 	}
 	return γ.HelloResponse, nil

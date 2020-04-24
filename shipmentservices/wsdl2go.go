@@ -2326,7 +2326,7 @@ func (p *shipmentServiceSoap) GetShipmentsList(GetShipmentsList *GetShipmentsLis
 	γ := struct {
 		OperationGetShipmentsListSoapOut `xml:"GetShipmentsListResponse"`
 	}{}
-	if err := p.cli.RoundTripSoap12("http://www.edi.com.au/EnterpriseService/GetShipmentsList", α, &γ); err != nil {
+	if err := p.cli.RoundTripWithAction("http://www.edi.com.au/EnterpriseService/GetShipmentsList", α, &γ); err != nil {
 		return nil, err
 	}
 	return γ.GetShipmentsListResponse, nil
@@ -2345,7 +2345,7 @@ func (p *shipmentServiceSoap) Hello(Hello *Hello) (*HelloResponse, error) {
 	γ := struct {
 		OperationHelloSoapOut `xml:"HelloResponse"`
 	}{}
-	if err := p.cli.RoundTripSoap12("http://www.edi.com.au/EnterpriseService/Hello", α, &γ); err != nil {
+	if err := p.cli.RoundTripWithAction("http://www.edi.com.au/EnterpriseService/Hello", α, &γ); err != nil {
 		return nil, err
 	}
 	return γ.HelloResponse, nil
