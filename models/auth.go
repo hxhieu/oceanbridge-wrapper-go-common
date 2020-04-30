@@ -9,6 +9,11 @@ type LoginRequest struct {
 // LoginResult struct
 type LoginResult struct {
 	AccessToken string `json:"accessToken"`
-	Expired     int64  `json:"expired"`
-	Error       string `json:"error"`
+}
+
+// AuthSession struct
+type AuthSession struct {
+	ID          string `json:"id"`
+	Email       string `json:"email"`
+	AccessToken string `json:"accessToken"`
 }
