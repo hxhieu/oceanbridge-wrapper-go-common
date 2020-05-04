@@ -12,7 +12,7 @@ import (
 )
 
 // DevMode defines if the application is run on dev mode
-var DevMode bool = strings.ToLower(os.Getenv("CARGOWISE_OCEANBRIDGE_REST_WRAPPER_PORT")) == "true"
+var DevMode bool = strings.ToLower(os.Getenv("CARGOWISE_OCEANBRIDGE_REST_WRAPPER_DEV_MODE")) == "true"
 
 // SetCors settings the CORS headers
 func SetCors(w *http.ResponseWriter) {
