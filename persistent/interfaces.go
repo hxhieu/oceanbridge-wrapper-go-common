@@ -8,5 +8,5 @@ type UserStore interface {
 	Logout(sessionIDs ...string) error
 	CreateSession(email string, accessToken string) error
 	SetToken(sessionID string, accessToken string) error
-	GetSession(sessionID string) (*models.AuthSession, *User, error)
+	GetSessions(email string) (*[]models.AuthSession, *User, error)
 }

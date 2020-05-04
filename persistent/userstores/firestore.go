@@ -25,6 +25,24 @@ type FirestoreUserStore struct {
 	context *context.Context
 }
 
+func (s FirestoreUserStore) getSessions(email string) (*[]models.AuthSession, error) {
+	// Login OK, check existing sessions
+	query := s.store.Collection("sessions").Where("Email", "==", email).Documents(*s.context)
+	var sessions []models.AuthSession
+	for {
+		doc, err := query.Next()
+		if err == iterator.Done {
+			break
+		}
+		var session models.AuthSession
+		if err := doc.DataTo(&session); err == nil {
+			sessions = append(sessions, session)
+		}
+	}
+
+	return &sessions, nil
+}
+
 // NewUserStoreFirestore creates an instance of user store backed by Firestore
 func NewUserStoreFirestore() (persistent.UserStore, error) {
 	// Create a Firebase instance
@@ -62,20 +80,12 @@ func (s FirestoreUserStore) Login(email string, password string) (*[]models.Auth
 	}
 
 	// Login OK, check existing sessions
-	query := s.store.Collection("sessions").Where("Email", "==", email).Documents(*s.context)
-	var sessions []models.AuthSession
-	for {
-		doc, err := query.Next()
-		if err == iterator.Done {
-			break
-		}
-		var session models.AuthSession
-		if err := doc.DataTo(&session); err == nil {
-			sessions = append(sessions, session)
-		}
+	sessions, err := s.getSessions(email)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, "An error has occured while querying the data.")
 	}
 
-	return &sessions, nil
+	return sessions, nil
 }
 
 // Logout and clear the sessions
@@ -105,20 +115,16 @@ func (s FirestoreUserStore) SetToken(sessionID string, accessToken string) error
 	return nil
 }
 
-// GetSession from the store
-func (s FirestoreUserStore) GetSession(sessionID string) (*models.AuthSession, *persistent.User, error) {
+// GetSessions of a user from the store
+func (s FirestoreUserStore) GetSessions(email string) (*[]models.AuthSession, *persistent.User, error) {
 	// Get session
-	sessionDoc, err := s.store.Collection("sessions").Doc(sessionID).Get(*s.context)
+	sessions, err := s.getSessions(email)
 	if err != nil {
-		return nil, nil, status.Error(codes.Aborted, "Invalid session.")
-	}
-	var session models.AuthSession
-	if err := sessionDoc.DataTo(&session); err != nil {
 		return nil, nil, err
 	}
 
 	// Get associated user
-	userDoc, err := s.store.Collection("users").Doc(session.Email).Get(*s.context)
+	userDoc, err := s.store.Collection("users").Doc(email).Get(*s.context)
 	if err != nil {
 		return nil, nil, status.Error(codes.Aborted, "Invalid session.")
 	}
@@ -127,7 +133,7 @@ func (s FirestoreUserStore) GetSession(sessionID string) (*models.AuthSession, *
 		return nil, nil, err
 	}
 
-	return &session, &user, nil
+	return sessions, &user, nil
 }
 
 // CreateSession create a new session for the user
