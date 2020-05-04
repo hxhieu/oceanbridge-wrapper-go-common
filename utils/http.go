@@ -11,6 +11,9 @@ import (
 	userstores "github.com/hxhieu/oceanbridge-wrapper-go-common/persistent/userstores"
 )
 
+// DevMode defines if the application is run on dev mode
+var DevMode bool = strings.ToLower(os.Getenv("CARGOWISE_OCEANBRIDGE_REST_WRAPPER_PORT")) == "true"
+
 // SetCors settings the CORS headers
 func SetCors(w *http.ResponseWriter) {
 	// TODO: Just allow all for the discovery stage
@@ -48,6 +51,14 @@ func GetValidSession(sessions *[]models.AuthSession, signingKey string) (*models
 // ParseAccessToken will try to parse the JWT,
 // from the Authorization header then return the user instance as well as the decoded claims map
 func ParseAccessToken(r *http.Request, w *http.ResponseWriter) (*persistent.User, *jwt.MapClaims) {
+	// Just use a local settings instead of burning the storage quotas
+	if DevMode {
+		return &persistent.User{
+			Email:    os.Getenv("CARGOWISE_OCEANBRIDGE_REST_WRAPPER_USER"),
+			Password: os.Getenv("CARGOWISE_OCEANBRIDGE_REST_WRAPPER_PASSWORD"),
+		}, nil
+	}
+
 	// Get get signing key
 	secret := os.Getenv("CARGOWISE_OCEANBRIDGE_REST_WRAPPER_JWT_SECRET")
 	if len(secret) <= 0 {
