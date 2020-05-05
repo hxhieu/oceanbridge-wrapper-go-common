@@ -12,6 +12,7 @@ require (
 	github.com/go-chi/chi v4.1.1+incompatible // indirect
 	github.com/go-chi/jwtauth v4.0.4+incompatible
 	github.com/golang/protobuf v1.4.0 // indirect
+	github.com/mitchellh/hashstructure v1.0.0
 	golang.org/x/net v0.0.0-20200425230154-ff2c4b7c35a0 // indirect
 	golang.org/x/sys v0.0.0-20200428200454-593003d681fa // indirect
 	golang.org/x/tools v0.0.0-20200428211428-0c9eba77bc32 // indirect
